@@ -59,4 +59,37 @@ public class UserDAO {
         }
         return user;
     }
+    public User findUserByUsername(String username){
+        User user = null;
+        String sql = "SELECT id, username FROM users WHERE username = ?";
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()){
+                user = new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getString("username"));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return user;
+    }
+    public int countPostByUserId(int userId){
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM posts WHERE user_id = ?";
+        try(Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setInt(1,userId);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                count = rs.getInt(1);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return count;
+    }
 }
